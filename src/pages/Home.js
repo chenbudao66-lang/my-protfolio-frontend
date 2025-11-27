@@ -266,7 +266,7 @@ const skillDescription = {
 };
 
 const blogSection = {
-  padding: '4rem 2rem',
+  padding: '3rem 2rem', // 从 4rem 2rem 改为 3rem 2rem
   borderTop: `1px solid ${colors.darkBrown}`,
   backgroundColor: colors.creamLight,
   maxWidth: '1200px',
@@ -283,15 +283,15 @@ const sectionTitle = {
 
 const blogGrid = {
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-  gap: '2rem',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', // 从 320px 改为 280px
+  gap: '1.5rem', // 从 2rem 改为 1.5rem
   marginBottom: '3rem'
 };
 
 const blogCard = {
   backgroundColor: colors.overlayLight,
-  padding: '2rem',
-  borderRadius: '12px', // 增加圆角
+  padding: '1.5rem', // 从 2rem 改为 1.5rem
+  borderRadius: '12px',
   border: `2px solid ${colors.darkBrown}`,
   cursor: 'pointer',
   transition: 'all 0.3s ease',
@@ -300,7 +300,8 @@ const blogCard = {
   flexDirection: 'column',
   justifyContent: 'space-between',
   position: 'relative',
-  overflow: 'hidden'
+  overflow: 'hidden',
+  minHeight: '180px' // 添加最小高度确保一致性
 };
 
 blogCard[':hover'] = {
@@ -310,34 +311,36 @@ blogCard[':hover'] = {
 
 const blogCardDecoration = {
   position: 'absolute',
-  bottom: '-15px',
-  left: '-15px',
-  width: '60px',
-  height: '60px',
+  bottom: '-10px', // 从 -15px 改为 -10px
+  left: '-10px', // 从 -15px 改为 -10px
+  width: '40px', // 从 60px 改为 40px
+  height: '40px', // 从 60px 改为 40px
   border: `2px solid ${colors.teal}`,
-  borderRadius: '12px',
+  borderRadius: '8px', // 从 12px 改为 8px
   opacity: 0.1
 };
 
 const blogTitle = {
   color: colors.darkBrown,
-  fontSize: '1.4rem',
-  marginBottom: '1rem',
+  fontSize: '1.2rem', // 从 1.4rem 改为 1.2rem
+  marginBottom: '0.8rem', // 从 1rem 改为 0.8rem
   fontWeight: 'normal'
 };
 
 const blogExcerpt = {
   color: colors.darkBrown,
-  lineHeight: '1.6',
-  marginBottom: '1.5rem',
-  flex: 1
+  lineHeight: '1.5', // 从 1.6 改为 1.5
+  marginBottom: '1rem', // 从 1.5rem 改为 1rem
+  flex: 1,
+  fontSize: '0.95rem' // 稍微缩小字体
 };
 
 const blogMeta = {
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  marginTop: 'auto'
+  marginTop: 'auto',
+  fontSize: '0.85rem' // 缩小元信息字体
 };
 
 const blogDate = {
@@ -360,21 +363,22 @@ const noPostsText = {
 
 const viewAllButton = {
   display: 'block',
-  margin: '0 auto',
-  padding: '1rem 2rem',
+  margin: '2rem auto 0 auto', // 修改这里：上边距 2rem，其他边 auto
+  padding: '0.8rem 1.5rem', // 稍微缩小内边距
   backgroundColor: 'transparent',
   color: colors.teal,
   border: `2px solid ${colors.teal}`,
   borderRadius: '4px',
   cursor: 'pointer',
-  fontSize: '1.1rem',
+  fontSize: '1rem', // 稍微缩小字体
   transition: 'all 0.3s ease',
   textDecoration: 'none'
 };
 
 viewAllButton[':hover'] = {
   backgroundColor: colors.teal,
-  color: colors.cream
+  color: colors.cream,
+  transform: 'translateY(-2px)'
 };
 
 const contactSection = {
