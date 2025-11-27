@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { colors } from '../styles/colors';
 import { blogManager } from '../services/mockData';
 import BlogModal from '../components/BlogModal';
+import BlogCard from '../components/BlogCard';
 
 function Home() {
   const navigate = useNavigate();
@@ -37,76 +38,73 @@ function Home() {
 
   return (
     <div style={pageStyle}>
-     {/* 英雄区域 */}
-    <section style={heroSection}>
-     <div style={geometricLine}></div>
-     <div style={heroContent}>
-        <h1 style={heroTitle}>Channing Winchester</h1>
-        <p style={heroSubtitle}>数字艺术家 & 视觉设计师</p>
-        <div style={ornamentStyle}>❧</div>
-        <p style={heroDescription}>
+      {/* 英雄区域 */}
+      <section style={heroSection}>
+        <div style={geometricLine}></div>
+        <div style={heroContent}>
+          <h1 style={heroTitle}>Channing Winchester</h1>
+          <p style={heroSubtitle}>数字艺术家 & 视觉设计师</p>
+          <div style={ornamentStyle}>❧</div>
+          <p style={heroDescription}>
             受穆夏启发的数字艺术创作，融合古典美学与现代技术，<br/>
             探索艺术与设计的无限可能。
-        </p>
-        <button 
-          style={ctaButton}
-          onClick={() => navigate('/projects')}
-        >
-         探索作品
-    </button>
-  </div>
-</section>
+          </p>
+          <button 
+            style={ctaButton}
+            onClick={() => navigate('/projects')}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = colors.teal;
+              e.target.style.color = colors.cream;
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = 'transparent';
+              e.target.style.color = colors.teal;
+            }}
+          >
+            探索作品
+          </button>
+        </div>
+      </section>
 
       {/* 技能简介 */}
       <section style={skillsSection}>
         <div style={skillsGrid}>
-  <div style={skillCard}>
-    <div style={skillCardDecoration}></div>
-    <h3 style={skillTitle}>数字艺术</h3>
-    <p style={skillDescription}>
-      受新艺术运动影响的插画与设计，强调自然形态与优雅线条。
-    </p>
-  </div>
-  <div style={skillCard}>
-    <div style={skillCardDecoration}></div>
-    <h3 style={skillTitle}>UI/UX 设计</h3>
-    <p style={skillDescription}>
-      结合美学与功能的用户体验设计，创造直观而美丽的数字产品。
-    </p>
-  </div>
-  <div style={skillCard}>
-    <div style={skillCardDecoration}></div>
-    <h3 style={skillTitle}>创意开发</h3>
-    <p style={skillDescription}>
-      将艺术思维融入代码，构建独特的交互体验和视觉呈现。
-    </p>
-  </div>
-</div>
+          <div style={skillCard}>
+            <div style={skillCardDecoration}></div>
+            <h3 style={skillTitle}>数字艺术</h3>
+            <p style={skillDescription}>
+              受新艺术运动影响的插画与设计，强调自然形态与优雅线条。
+            </p>
+          </div>
+          <div style={skillCard}>
+            <div style={skillCardDecoration}></div>
+            <h3 style={skillTitle}>UI/UX 设计</h3>
+            <p style={skillDescription}>
+              结合美学与功能的用户体验设计，创造直观而美丽的数字产品。
+            </p>
+          </div>
+          <div style={skillCard}>
+            <div style={skillCardDecoration}></div>
+            <h3 style={skillTitle}>创意开发</h3>
+            <p style={skillDescription}>
+              将艺术思维融入代码，构建独特的交互体验和视觉呈现。
+            </p>
+          </div>
+        </div>
       </section>
 
       {/* 博客预览部分 */}
       <section style={blogSection}>
         <h2 style={sectionTitle}>最新文章</h2>
-       <div style={blogGrid}>
-  {recentPosts.map(post => (
-    <div 
-      key={post.id} 
-      style={blogCard}
-      onClick={() => handlePostClick(post)}
-    >
-      <div style={blogCardDecoration}></div>
-      <h3 style={blogTitle}>
-         {post.title}
-         <div style={titleDecoration}></div>
-      </h3>      
-      <p style={blogExcerpt}>{post.excerpt}</p>
-      <div style={blogMeta}>
-        <span style={blogDate}>{post.createdAt}</span>
-        <span style={blogComments}>💬 {post.comments ? post.comments.length : 0}</span>
-      </div>
-    </div>
-  ))}
-</div>
+        <div style={blogGrid}>
+          {recentPosts.map(post => (
+            <BlogCard 
+              key={post.id} 
+              post={post}
+              onClick={() => handlePostClick(post)}
+            />
+          ))}
+        </div>
         {recentPosts.length === 0 && (
           <p style={noPostsText}>暂无博客文章</p>
         )}
@@ -114,6 +112,14 @@ function Home() {
           <button 
             onClick={() => navigate('/blog')}
             style={viewAllButton}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = colors.teal;
+              e.target.style.color = colors.cream;
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = 'transparent';
+              e.target.style.color = colors.teal;
+            }}
           >
             查看所有文章 →
           </button>
@@ -130,6 +136,14 @@ function Home() {
           <button 
             style={contactButton}
             onClick={() => navigate('/contact')}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = colors.tealDark;
+              e.target.style.transform = 'translateY(-2px)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = colors.teal;
+              e.target.style.transform = 'translateY(0)';
+            }}
           >
             联系我
           </button>
@@ -162,15 +176,6 @@ const heroSection = {
   borderBottom: `1px solid ${colors.darkBrown}`,
   position: 'relative',
   overflow: 'hidden'
-};
-
-const geometricLine = {
-  position: 'absolute',
-  bottom: '0',
-  left: '0',
-  width: '100%',
-  height: '2px',
-  background: `linear-gradient(90deg, transparent, ${colors.teal}, transparent)`
 };
 
 const heroContent = {
@@ -216,9 +221,13 @@ const ctaButton = {
   transition: 'all 0.3s ease'
 };
 
-ctaButton[':hover'] = {
-  backgroundColor: colors.teal,
-  color: colors.cream
+const geometricLine = {
+  position: 'absolute',
+  bottom: '0',
+  left: '0',
+  width: '100%',
+  height: '2px',
+  background: `linear-gradient(90deg, transparent, ${colors.teal}, transparent)`
 };
 
 const skillsSection = {
@@ -236,14 +245,13 @@ const skillsGrid = {
 const skillCard = {
   backgroundColor: colors.overlayLight,
   padding: '2rem',
-  borderRadius: '12px', // 增加圆角
+  borderRadius: '12px',
   border: `2px solid ${colors.darkBrown}`,
   textAlign: 'center',
   position: 'relative',
   overflow: 'hidden'
 };
 
-// 在 skillCard 后添加几何装饰
 const skillCardDecoration = {
   position: 'absolute',
   top: '-10px',
@@ -269,7 +277,7 @@ const skillDescription = {
 };
 
 const blogSection = {
-  padding: '3rem 2rem', // 从 4rem 2rem 改为 3rem 2rem
+  padding: '3rem 2rem',
   borderTop: `1px solid ${colors.darkBrown}`,
   backgroundColor: colors.creamLight,
   maxWidth: '1200px',
@@ -286,92 +294,9 @@ const sectionTitle = {
 
 const blogGrid = {
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', // 从 320px 改为 280px
-  gap: '1.5rem', // 从 2rem 改为 1.5rem
+  gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+  gap: '2rem',
   marginBottom: '3rem'
-};
-
-const blogCard = {
-  backgroundColor: colors.overlayLight,
-  padding: '1.5rem',
-  borderRadius: '12px',
-  border: `2px solid ${colors.darkBrown}`,
-  cursor: 'pointer',
-  transition: 'all 0.3s ease',
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-between',
-  position: 'relative',
-  overflow: 'hidden',
-  minHeight: '180px',
-  boxShadow: `0 4px 15px ${colors.darkBrownDark}20` // 添加阴影增加层次感
-};
-
-blogCard[':hover'] = {
-  transform: 'translateY(-6px)', // 增加悬停上移距离
-  boxShadow: `0 8px 30px ${colors.darkBrownDark}30`, // 增强阴影
-  borderColor: colors.teal // 悬停时边框变色
-};
-
-const blogCardDecoration = {
-  position: 'absolute',
-  bottom: '-10px', // 从 -15px 改为 -10px
-  left: '-10px', // 从 -15px 改为 -10px
-  width: '40px', // 从 60px 改为 40px
-  height: '40px', // 从 60px 改为 40px
-  border: `2px solid ${colors.teal}`,
-  borderRadius: '8px', // 从 12px 改为 8px
-  opacity: 0.1
-};
-
-const blogTitle = {
-  color: colors.darkBrown,
-  fontSize: '1.2rem',
-  marginBottom: '0.8rem',
-  fontWeight: '600', // 改为中等粗体
-  borderBottom: `1px solid ${colors.teal}30`, // 添加底部边框线
-  paddingBottom: '0.5rem', // 增加底部内边距
-  position: 'relative'
-};
-
-const titleDecoration = {
-  position: 'absolute',
-  bottom: '0',
-  left: '0',
-  width: '30px',
-  height: '2px',
-  backgroundColor: colors.teal,
-  borderRadius: '1px'
-};
-
-const blogExcerpt = {
-  color: colors.darkBrown,
-  lineHeight: '1.5',
-  marginBottom: '1rem',
-  flex: 1,
-  fontSize: '0.95rem',
-  opacity: 0.8 // 降低不透明度，与标题形成对比
-};
-
-const blogMeta = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  marginTop: 'auto',
-  fontSize: '0.85rem',
-  paddingTop: '0.8rem', // 增加顶部内边距
-  borderTop: `1px solid ${colors.darkBrown}20` // 添加顶部边框线
-};
-
-const blogDate = {
-  color: colors.teal,
-  fontSize: '0.9rem'
-};
-
-const blogComments = {
-  color: colors.teal,
-  fontSize: '0.9rem'
 };
 
 const noPostsText = {
@@ -384,22 +309,16 @@ const noPostsText = {
 
 const viewAllButton = {
   display: 'block',
-  margin: '4rem auto 0 auto', // 修改这里：上边距 2rem，其他边 auto
-  padding: '0.8rem 1.5rem', // 稍微缩小内边距
+  margin: '2rem auto 0 auto',
+  padding: '0.8rem 1.5rem',
   backgroundColor: 'transparent',
   color: colors.teal,
   border: `2px solid ${colors.teal}`,
   borderRadius: '4px',
   cursor: 'pointer',
-  fontSize: '1rem', // 稍微缩小字体
+  fontSize: '1rem',
   transition: 'all 0.3s ease',
   textDecoration: 'none'
-};
-
-viewAllButton[':hover'] = {
-  backgroundColor: colors.teal,
-  color: colors.cream,
-  transform: 'translateY(-2px)'
 };
 
 const contactSection = {
@@ -437,11 +356,6 @@ const contactButton = {
   fontSize: '1.1rem',
   cursor: 'pointer',
   transition: 'all 0.3s ease'
-};
-
-contactButton[':hover'] = {
-  backgroundColor: colors.tealDark,
-  transform: 'translateY(-2px)'
 };
 
 export default Home;

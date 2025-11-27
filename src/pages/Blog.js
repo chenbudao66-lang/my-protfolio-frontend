@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { colors } from '../styles/colors';
 import { blogManager } from '../services/mockData';
 import BlogModal from '../components/BlogModal';
+import BlogCard from '../components/BlogCard';
 
 function Blog() {
   const [posts, setPosts] = useState([]);
@@ -57,7 +58,6 @@ function Blog() {
     }
   };
 
-  // 原有的加载、错误状态和返回部分保持不变...
   if (loading) {
     return (
       <div style={pageStyle}>
@@ -92,16 +92,25 @@ function Blog() {
         <p style={subtitleStyle}>思想与灵感的记录</p>
         <div style={ornamentStyle}>❧</div>
         
-        {/* 添加"写下灵感"按钮 */}
         <button 
           onClick={handleCreatePost}
           style={createButton}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = colors.tealDark;
+            e.target.style.transform = 'translateY(-2px)';
+            e.target.style.boxShadow = `0 4px 15px ${colors.darkBrownDark}50`;
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = colors.teal;
+            e.target.style.transform = 'translateY(0)';
+            e.target.style.boxShadow = `0 2px 10px ${colors.darkBrownDark}30`;
+          }}
         >
-          📜 写下灵感
+          ✍🏻️ 写下灵感
         </button>
       </div>
 
-      <div style={articlesList}>
+      <div style={blogGridStyle}>
         {posts.length === 0 ? (
           <div style={emptyState}>
             <h3 style={emptyTitle}>暂无文章</h3>
@@ -109,33 +118,27 @@ function Blog() {
             <button 
               onClick={handleCreatePost}
               style={createButton}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = colors.tealDark;
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = `0 4px 15px ${colors.darkBrownDark}50`;
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = colors.teal;
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = `0 2px 10px ${colors.darkBrownDark}30`;
+              }}
             >
-              ✍🏻️ 写下第一篇文章
+               📜 写下第一篇文章
             </button>
           </div>
         ) : (
           posts.map(post => (
-            <div 
+            <BlogCard 
               key={post.id} 
-              style={articleCard}
+              post={post}
               onClick={() => handlePostClick(post)}
-            >
-              <div style={articleHeader}>
-                <h3 style={articleTitle}>{post.title}</h3>
-                <span style={articleDate}>{post.createdAt}</span>
-              </div>
-              <p style={articleExcerpt}>{post.excerpt}</p>
-              <div style={articleFooter}>
-                <div style={tagsContainer}>
-                  {post.tags.map(tag => (
-                    <span key={tag} style={tagStyle}>{tag}</span>
-                  ))}
-                </div>
-                <div style={articleStats}>
-                  <span style={commentCount}>💬 {post.comments ? post.comments.length : 0} 条评论</span>
-                </div>
-              </div>
-            </div>
+            />
           ))
         )}
       </div>
@@ -148,7 +151,6 @@ function Blog() {
         <p style={signature}>— Channing Winchester —</p>
       </div>
 
-      {/* 博客模态框 */}
       {showModal && (
         <BlogModal 
           post={selectedPost}
@@ -160,9 +162,10 @@ function Blog() {
   );
 }
 
+// 样式定义
 const pageStyle = {
   padding: '2rem',
-  maxWidth: '800px',
+  maxWidth: '1400px',
   margin: '0 auto',
   backgroundColor: colors.cream,
   color: colors.darkBrown,
@@ -191,90 +194,36 @@ const subtitleStyle = {
 
 const ornamentStyle = {
   color: colors.teal,
-  fontSize: '2rem'
+  fontSize: '2rem',
+  marginBottom: '2rem'
 };
 
-const articlesList = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '2.5rem',  // 从 2rem 增加到 2.5rem
-  marginBottom: '4rem'
+// 响应式网格布局
+const blogGridStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(1, 1fr)',
+  gap: '2rem',
+  marginBottom: '4rem',
+  '@media (min-width: 768px)': {
+    gridTemplateColumns: 'repeat(2, 1fr)'
+  },
+  '@media (min-width: 1024px)': {
+    gridTemplateColumns: 'repeat(3, 1fr)'
+  }
 };
 
-const articleCard = {
-  border: `1px solid ${colors.darkBrown}`,
-  backgroundColor: colors.overlayLight,
-  padding: '2.5rem',  // 从 2rem 增加到 2.5rem，让内容更宽松
-  borderRadius: '8px',
-  transition: 'all 0.3s ease',
-  cursor: 'pointer',
-  marginBottom: '1rem'  // 添加底部外边距
-};
-
-const articleHeader = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'flex-start',
-  marginBottom: '1rem',
-  flexWrap: 'wrap',
-  gap: '1rem'
-};
-
-const articleTitle = {
-  color: colors.darkBrown,
-  fontSize: '1.5rem',
-  fontWeight: 'normal',
-  margin: 0,
-  flex: 1
-};
-
-const articleDate = {
-  color: colors.teal,
-  fontSize: '0.9rem',
-  whiteSpace: 'nowrap'
-};
-
-const articleExcerpt = {
-  color: colors.darkBrown,
-  lineHeight: '1.7',
-  fontSize: '1.1rem',
-  marginBottom: '1.5rem'
-};
-
-const articleFooter = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  flexWrap: 'wrap',
-  gap: '1rem',
-  marginTop: '1.5rem',  // 添加这个，增加上边距
-  paddingTop: '1rem',   // 添加这个，增加内边距
-  borderTop: `1px solid ${colors.creamDark}`  // 添加分隔线
-};
-
-const tagsContainer = {
-  display: 'flex',
-  flexWrap: 'wrap',
-  gap: '0.5rem'
-};
-
-const tagStyle = {
-  padding: '0.2rem 0.6rem',
+const createButton = {
+  padding: '12px 24px',
   backgroundColor: colors.teal,
   color: colors.cream,
-  fontSize: '0.8rem',
-  borderRadius: '4px'
-};
-
-const articleStats = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '1rem'
-};
-
-const commentCount = {
-  color: colors.teal,
-  fontSize: '0.9rem'
+  border: 'none',
+  borderRadius: '8px',
+  fontSize: '1rem',
+  fontWeight: '600',
+  cursor: 'pointer',
+  transition: 'all 0.3s ease',
+  marginTop: '1rem',
+  boxShadow: `0 2px 10px ${colors.darkBrownDark}30`
 };
 
 const quoteSection = {
@@ -298,13 +247,13 @@ const signature = {
   fontStyle: 'italic'
 };
 
-// 空状态样式
 const emptyState = {
   textAlign: 'center',
   padding: '4rem 2rem',
   backgroundColor: colors.overlayLight,
-  borderRadius: '8px',
-  border: `1px solid ${colors.darkBrown}`
+  borderRadius: '12px',
+  border: `1px solid ${colors.darkBrown}`,
+  gridColumn: '1 / -1'
 };
 
 const emptyTitle = {
@@ -316,10 +265,10 @@ const emptyTitle = {
 const emptyText = {
   color: colors.teal,
   fontSize: '1.1rem',
-  lineHeight: '1.6'
+  lineHeight: '1.6',
+  marginBottom: '2rem'
 };
 
-// 加载状态样式
 const loadingStyle = {
   display: 'flex',
   flexDirection: 'column',
@@ -343,7 +292,6 @@ const loadingText = {
   fontSize: '1.2rem'
 };
 
-// 错误状态样式
 const errorStyle = {
   display: 'flex',
   flexDirection: 'column',
@@ -370,25 +318,6 @@ const retryButton = {
   transition: 'all 0.3s ease'
 };
 
-const createButton = {
-  padding: '0.8rem 1.5rem',
-  backgroundColor: colors.teal,
-  color: colors.cream,
-  border: 'none',
-  borderRadius: '8px',
-  fontSize: '1rem',
-  cursor: 'pointer',
-  transition: 'all 0.3s ease',
-  marginTop: '1rem',
-  boxShadow: `0 2px 10px ${colors.darkBrownDark}30`
-};
-
-createButton[':hover'] = {
-  backgroundColor: colors.tealDark,
-  transform: 'translateY(-2px)',
-  boxShadow: `0 4px 15px ${colors.darkBrownDark}50`
-};
-
 // 添加CSS动画
 const styleSheet = document.styleSheets[0];
 const keyframes = `
@@ -396,7 +325,31 @@ const keyframes = `
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+@media (min-width: 768px) {
+  .blog-grid-responsive {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .blog-grid-responsive {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
 `;
-styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
+
+// 插入样式
+try {
+  styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
+} catch (e) {
+  console.log('Styles already exist');
+}
+
+// 创建带有响应式类名的样式
+const blogGridWithResponsive = {
+  ...blogGridStyle,
+  className: 'blog-grid-responsive'
+};
 
 export default Blog;
