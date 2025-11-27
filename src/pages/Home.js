@@ -4,6 +4,7 @@ import { colors } from '../styles/colors';
 import { blogManager } from '../services/mockData';
 import BlogModal from '../components/BlogModal';
 import BlogCard from '../components/BlogCard';
+import { blogAPI } from '../services/api';
 
 function Home() {
   const navigate = useNavigate();
@@ -12,10 +13,20 @@ function Home() {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    // 获取最新的3篇博客文章
-    const posts = blogManager.getAllPosts().slice(0, 3);
-    setRecentPosts(posts);
-  }, []);
+  // 获取最新的3篇博客文章
+  const fetchRecentPosts = async () => {
+    try {
+      const response = await blogAPI.getAll();
+      const allPosts = response.data || response;
+      const posts = allPosts.slice(0, 3); // 取最新的3篇
+      setRecentPosts(posts);
+    } catch (err) {
+      console.error('Error fetching recent posts:', err);
+    }
+  };
+
+  fetchRecentPosts();
+}, []);
 
   const handlePostClick = (post) => {
     setSelectedPost(post);

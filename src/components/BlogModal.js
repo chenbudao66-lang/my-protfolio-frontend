@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { colors } from '../styles/colors';
 import { blogManager } from '../services/mockData';
 import { useAuth } from '../context/AuthContext';
+import { blogAPI } from '../services/api';
 
 function BlogModal({ post, onClose, onUpdate }) {
   const { user } = useAuth();
@@ -9,30 +10,36 @@ function BlogModal({ post, onClose, onUpdate }) {
 
   if (!post) return null;
 
-  const handleAddComment = () => {
-    if (!commentText.trim()) {
-      alert('请输入评论内容');
-      return;
-    }
+const handleAddComment = async () => {
+  if (!commentText.trim()) {
+    alert('请输入评论内容');
+    return;
+  }
 
-    if (!user) {
-      alert('请先登录后再评论');
-      return;
-    }
+  if (!user) {
+    alert('请先登录后再评论');
+    return;
+  }
 
-    const newComment = {
-      author: user.name,
-      content: commentText.trim()
+  try {
+    const commentData = {
+      body: commentText.trim(),
+      author: user.id // 使用用户ID
     };
 
-    blogManager.addComment(post.id, newComment);
+    // 调用真实API添加评论
+    await blogAPI.addComment(post.id, commentData);
     
-    // 更新文章数据
-    const updatedPost = blogManager.getAllPosts().find(p => p.id === post.id);
+    // 重新获取文章数据
+    const response = await blogAPI.getById(post.id);
+    const updatedPost = response.data || response;
     setCommentText('');
-    onUpdate(updatedPost); // 通知父组件更新
+    onUpdate(updatedPost);
     alert('评论发布成功！');
-  };
+  } catch (err) {
+    alert('评论发布失败: ' + err.message);
+  }
+};
 
   const handleBackgroundClick = (e) => {
     if (e.target === e.currentTarget) {

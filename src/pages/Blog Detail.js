@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { colors } from '../styles/colors';
 import { blogManager } from '../services/mockData';
 import { useAuth } from '../context/AuthContext';
+import { blogAPI } from '../services/api';
 
 function BlogDetail() {
   const { id } = useParams();
@@ -13,44 +14,51 @@ function BlogDetail() {
   const [commentText, setCommentText] = useState('');
 
   useEffect(() => {
-    const fetchPost = () => {
-      try {
-        const postData = blogManager.getAllPosts().find(p => p.id === parseInt(id));
-        setPost(postData);
-      } catch (err) {
-        console.error('Error fetching blog post:', err);
-      } finally {
-        setLoading(false);
-      }
+  const fetchPost = async () => {
+    try {
+      setLoading(true);
+      // 改为调用真实API
+      const response = await blogAPI.getById(id);
+      setPost(response.data || response); // 适配不同的响应格式
+    } catch (err) {
+      console.error('Error fetching blog post:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchPost();
+}, [id]);
+
+ const handleAddComment = async () => {
+  if (!commentText.trim()) {
+    alert('请输入评论内容');
+    return;
+  }
+
+  if (!user) {
+    alert('请先登录后再评论');
+    return;
+  }
+
+  try {
+    const commentData = {
+      body: commentText.trim(),
+      author: user.id // 使用用户ID而不是名字
     };
 
-    fetchPost();
-  }, [id]);
-
-  const handleAddComment = () => {
-    if (!commentText.trim()) {
-      alert('请输入评论内容');
-      return;
-    }
-
-    if (!user) {
-      alert('请先登录后再评论');
-      return;
-    }
-
-    const newComment = {
-      author: user.name,
-      content: commentText.trim()
-    };
-
-    blogManager.addComment(parseInt(id), newComment);
+    // 调用真实API添加评论
+    await blogAPI.addComment(id, commentData);
     
-    // 更新文章数据
-    const updatedPost = blogManager.getAllPosts().find(p => p.id === parseInt(id));
-    setPost(updatedPost);
+    // 重新获取文章数据以更新评论列表
+    const response = await blogAPI.getById(id);
+    setPost(response.data || response);
     setCommentText('');
     alert('评论发布成功！');
-  };
+  } catch (err) {
+    alert('评论发布失败: ' + err.message);
+  }
+};
 
   if (loading) {
     return (

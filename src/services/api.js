@@ -1,5 +1,5 @@
 // API基础URL - 在实际项目中替换为你的后端API地址
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = 'https://my-portfolio-api-xvr1.onrender.com/api';
 
 // 通用的API请求函数
 async function apiRequest(endpoint, options = {}) {
