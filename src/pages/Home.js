@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { colors } from '../styles/colors';
 import { blogManager } from '../services/mockData';
+import BlogModal from '../components/BlogModal';
 
 function Home() {
   const navigate = useNavigate();
   const [recentPosts, setRecentPosts] = useState([]);
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     // 获取最新的3篇博客文章
@@ -13,32 +16,43 @@ function Home() {
     setRecentPosts(posts);
   }, []);
 
+  const handlePostClick = (post) => {
+    setSelectedPost(post);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedPost(null);
+  };
+
+  const handleUpdatePost = (updatedPost) => {
+    // 更新文章列表中的文章数据
+    const updatedPosts = recentPosts.map(post => 
+      post.id === updatedPost.id ? updatedPost : post
+    );
+    setRecentPosts(updatedPosts);
+    setSelectedPost(updatedPost);
+  };
+
   return (
     <div style={pageStyle}>
       {/* 英雄区域 */}
       <section style={heroSection}>
         <div style={heroContent}>
           <h1 style={heroTitle}>Channing Winchester</h1>
-          <p style={heroSubtitle}>数字艺术家 & 创意开发者</p>
+          <p style={heroSubtitle}>数字艺术家 & 视觉设计师</p>
           <div style={ornamentStyle}>❧</div>
           <p style={heroDescription}>
-            融合古典美学与现代技术，创造独特的数字艺术体验。<br/>
-            受穆夏启发的创作，探索艺术与科技的边界。
+            受穆夏启发的数字艺术创作，融合古典美学与现代技术，<br/>
+            探索艺术与设计的无限可能。
           </p>
-          <div style={heroButtons}>
-            <button 
-              onClick={() => navigate('/projects')}
-              style={primaryButton}
-            >
-              探索作品
-            </button>
-            <button 
-              onClick={() => navigate('/contact')}
-              style={secondaryButton}
-            >
-              联系我
-            </button>
-          </div>
+          <button 
+            style={ctaButton}
+            onClick={() => navigate('/projects')}
+          >
+            探索作品
+          </button>
         </div>
       </section>
 
@@ -46,24 +60,21 @@ function Home() {
       <section style={skillsSection}>
         <div style={skillsGrid}>
           <div style={skillCard}>
-            <div style={skillIcon}>🎨</div>
             <h3 style={skillTitle}>数字艺术</h3>
             <p style={skillDescription}>
-              受新艺术运动启发的视觉创作，融合自然形态与优雅线条
+              受新艺术运动影响的插画与设计，强调自然形态与优雅线条。
             </p>
           </div>
           <div style={skillCard}>
-            <div style={skillIcon}>💻</div>
-            <h3 style={skillTitle}>前端开发</h3>
+            <h3 style={skillTitle}>UI/UX 设计</h3>
             <p style={skillDescription}>
-              构建现代、响应式的用户体验，注重细节与性能
+              结合美学与功能的用户体验设计，创造直观而美丽的数字产品。
             </p>
           </div>
           <div style={skillCard}>
-            <div style={skillIcon}>✍️</div>
-            <h3 style={skillTitle}>创意写作</h3>
+            <h3 style={skillTitle}>创意开发</h3>
             <p style={skillDescription}>
-              分享艺术见解与技术思考，记录创作历程
+              将艺术思维融入代码，构建独特的交互体验和视觉呈现。
             </p>
           </div>
         </div>
@@ -72,76 +83,72 @@ function Home() {
       {/* 博客预览部分 */}
       <section style={blogSection}>
         <h2 style={sectionTitle}>最新文章</h2>
-        <p style={sectionSubtitle}>思想与灵感的记录</p>
         <div style={blogGrid}>
           {recentPosts.map(post => (
             <div 
               key={post.id} 
               style={blogCard}
-              onClick={() => navigate(`/blog/${post.id}`)}
+              onClick={() => handlePostClick(post)}
             >
               <h3 style={blogTitle}>{post.title}</h3>
               <p style={blogExcerpt}>{post.excerpt}</p>
               <div style={blogMeta}>
                 <span style={blogDate}>{post.createdAt}</span>
-                <span style={blogComments}>💬 {post.comments.length}</span>
-              </div>
-              <div style={tagsContainer}>
-                {post.tags.slice(0, 3).map(tag => (
-                  <span key={tag} style={tagStyle}>{tag}</span>
-                ))}
+                <span style={blogComments}>💬 {post.comments ? post.comments.length : 0}</span>
               </div>
             </div>
           ))}
         </div>
         {recentPosts.length === 0 && (
-          <div style={emptyState}>
-            <h3 style={emptyTitle}>暂无文章</h3>
-            <p style={emptyText}>还没有发布任何博客文章</p>
-          </div>
+          <p style={noPostsText}>暂无博客文章</p>
         )}
         {recentPosts.length > 0 && (
-          <div style={viewAllContainer}>
-            <button 
-              onClick={() => navigate('/blog')}
-              style={viewAllButton}
-            >
-              查看所有文章 →
-            </button>
-          </div>
+          <button 
+            onClick={() => navigate('/blog')}
+            style={viewAllButton}
+          >
+            查看所有文章 →
+          </button>
         )}
       </section>
 
-      {/* 召唤区域 */}
-      <section style={ctaSection}>
-        <div style={ctaContent}>
-          <h2 style={ctaTitle}>开始创作对话</h2>
-          <p style={ctaText}>
-            对某个项目感兴趣？想要讨论合作机会？<br/>
-            或者只是想聊聊艺术与技术的融合？
+      {/* 联系召唤 */}
+      <section style={contactSection}>
+        <div style={contactContent}>
+          <h2 style={contactTitle}>开始创意对话</h2>
+          <p style={contactText}>
+            有项目想法或合作意向？我很乐意与您交流。
           </p>
           <button 
+            style={contactButton}
             onClick={() => navigate('/contact')}
-            style={ctaButton}
           >
-            取得联系
+            联系我
           </button>
         </div>
       </section>
+
+      {/* 博客模态框 */}
+      {showModal && (
+        <BlogModal 
+          post={selectedPost}
+          onClose={handleCloseModal}
+          onUpdate={handleUpdatePost}
+        />
+      )}
     </div>
   );
 }
 
 // 样式定义
 const pageStyle = {
-  minHeight: '70vh',
+  minHeight: '100vh',
   backgroundColor: colors.cream,
   color: colors.darkBrown
 };
 
-// 英雄区域样式
 const heroSection = {
-  padding: '6rem 2rem 4rem',
+  padding: '6rem 2rem 4rem 2rem',
   textAlign: 'center',
   background: `linear-gradient(135deg, ${colors.cream} 0%, ${colors.creamLight} 100%)`,
   borderBottom: `1px solid ${colors.darkBrown}`
@@ -153,11 +160,10 @@ const heroContent = {
 };
 
 const heroTitle = {
-  fontSize: '4rem',
+  fontSize: '3.5rem',
   color: colors.darkBrown,
   marginBottom: '1rem',
-  fontWeight: 'normal',
-  letterSpacing: '2px'
+  fontWeight: 'normal'
 };
 
 const heroSubtitle = {
@@ -168,8 +174,8 @@ const heroSubtitle = {
 };
 
 const ornamentStyle = {
-  fontSize: '3rem',
   color: colors.teal,
+  fontSize: '2.5rem',
   marginBottom: '2rem'
 };
 
@@ -180,66 +186,47 @@ const heroDescription = {
   color: colors.darkBrown
 };
 
-const heroButtons = {
-  display: 'flex',
-  gap: '1rem',
-  justifyContent: 'center',
-  flexWrap: 'wrap'
-};
-
-const primaryButton = {
-  padding: '1rem 2rem',
-  backgroundColor: colors.darkBrown,
-  color: colors.cream,
-  border: 'none',
-  borderRadius: '4px',
-  fontSize: '1.1rem',
-  cursor: 'pointer',
-  transition: 'all 0.3s ease'
-};
-
-const secondaryButton = {
-  padding: '1rem 2rem',
+const ctaButton = {
+  padding: '1rem 2.5rem',
   backgroundColor: 'transparent',
-  color: colors.darkBrown,
-  border: `2px solid ${colors.darkBrown}`,
+  color: colors.teal,
+  border: `2px solid ${colors.teal}`,
   borderRadius: '4px',
   fontSize: '1.1rem',
   cursor: 'pointer',
   transition: 'all 0.3s ease'
 };
 
-// 技能区域样式
+ctaButton[':hover'] = {
+  backgroundColor: colors.teal,
+  color: colors.cream
+};
+
 const skillsSection = {
   padding: '4rem 2rem',
-  backgroundColor: colors.overlayLight
+  maxWidth: '1200px',
+  margin: '0 auto'
 };
 
 const skillsGrid = {
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-  gap: '2rem',
-  maxWidth: '1000px',
-  margin: '0 auto'
+  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+  gap: '2rem'
 };
 
 const skillCard = {
-  textAlign: 'center',
+  backgroundColor: colors.overlayLight,
   padding: '2rem',
-  backgroundColor: colors.cream,
   borderRadius: '8px',
-  border: `1px solid ${colors.darkBrown}`
-};
-
-const skillIcon = {
-  fontSize: '3rem',
-  marginBottom: '1rem'
+  border: `1px solid ${colors.darkBrown}`,
+  textAlign: 'center'
 };
 
 const skillTitle = {
   color: colors.darkBrown,
-  fontSize: '1.3rem',
-  marginBottom: '1rem'
+  fontSize: '1.5rem',
+  marginBottom: '1rem',
+  fontWeight: 'normal'
 };
 
 const skillDescription = {
@@ -247,34 +234,27 @@ const skillDescription = {
   lineHeight: '1.6'
 };
 
-// 博客区域样式
 const blogSection = {
-  padding: '4rem 0',
+  padding: '4rem 2rem',
   borderTop: `1px solid ${colors.darkBrown}`,
-  marginTop: '3rem', // 添加上边距
-  position: 'relative' // 确保正常布局
+  backgroundColor: colors.creamLight,
+  maxWidth: '1200px',
+  margin: '0 auto'
 };
+
 const sectionTitle = {
   color: colors.darkBrown,
   fontSize: '2.5rem',
   textAlign: 'center',
-  marginBottom: '1rem',
-  fontWeight: 'normal'
-};
-
-const sectionSubtitle = {
-  color: colors.teal,
-  fontSize: '1.2rem',
-  textAlign: 'center',
   marginBottom: '3rem',
-  fontStyle: 'italic'
+  fontWeight: 'normal'
 };
 
 const blogGrid = {
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
   gap: '2rem',
-  marginBottom: '3rem' // 增加底部间距
+  marginBottom: '3rem'
 };
 
 const blogCard = {
@@ -286,11 +266,11 @@ const blogCard = {
   transition: 'all 0.3s ease',
   height: '100%',
   display: 'flex',
-  flexDirection: 'column'
+  flexDirection: 'column',
+  justifyContent: 'space-between'
 };
 
-// 添加悬停效果
-const blogCardHover = {
+blogCard[':hover'] = {
   transform: 'translateY(-4px)',
   boxShadow: `0 8px 25px ${colors.darkBrownDark}`
 };
@@ -313,7 +293,7 @@ const blogMeta = {
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  marginBottom: '1rem'
+  marginTop: 'auto'
 };
 
 const blogDate = {
@@ -326,43 +306,12 @@ const blogComments = {
   fontSize: '0.9rem'
 };
 
-const tagsContainer = {
-  display: 'flex',
-  flexWrap: 'wrap',
-  gap: '0.5rem'
-};
-
-const tagStyle = {
-  padding: '0.2rem 0.6rem',
-  backgroundColor: colors.teal,
-  color: colors.cream,
-  fontSize: '0.8rem',
-  borderRadius: '4px'
-};
-
-const emptyState = {
+const noPostsText = {
   textAlign: 'center',
-  padding: '4rem 2rem',
-  backgroundColor: colors.overlayLight,
-  borderRadius: '8px',
-  border: `1px solid ${colors.darkBrown}`,
-  maxWidth: '600px',
-  margin: '0 auto'
-};
-
-const emptyTitle = {
-  color: colors.darkBrown,
-  fontSize: '1.5rem',
-  marginBottom: '1rem'
-};
-
-const emptyText = {
   color: colors.teal,
+  fontStyle: 'italic',
+  padding: '2rem',
   fontSize: '1.1rem'
-};
-
-const viewAllContainer = {
-  textAlign: 'center'
 };
 
 const viewAllButton = {
@@ -376,39 +325,42 @@ const viewAllButton = {
   cursor: 'pointer',
   fontSize: '1.1rem',
   transition: 'all 0.3s ease',
-  textDecoration: 'none',
-  textAlign: 'center',
-  width: 'fit-content'
+  textDecoration: 'none'
 };
 
-// 召唤区域样式
-const ctaSection = {
+viewAllButton[':hover'] = {
+  backgroundColor: colors.teal,
+  color: colors.cream
+};
+
+const contactSection = {
   padding: '4rem 2rem',
+  textAlign: 'center',
   backgroundColor: colors.overlayLight,
   borderTop: `1px solid ${colors.darkBrown}`
 };
 
-const ctaContent = {
+const contactContent = {
   maxWidth: '600px',
-  margin: '0 auto',
-  textAlign: 'center'
+  margin: '0 auto'
 };
 
-const ctaTitle = {
+const contactTitle = {
   color: colors.darkBrown,
-  fontSize: '2rem',
-  marginBottom: '1rem'
+  fontSize: '2.2rem',
+  marginBottom: '1rem',
+  fontWeight: 'normal'
 };
 
-const ctaText = {
+const contactText = {
   color: colors.darkBrown,
   fontSize: '1.2rem',
-  lineHeight: '1.6',
-  marginBottom: '2rem'
+  marginBottom: '2rem',
+  lineHeight: '1.6'
 };
 
-const ctaButton = {
-  padding: '1rem 2rem',
+const contactButton = {
+  padding: '1rem 2.5rem',
   backgroundColor: colors.teal,
   color: colors.cream,
   border: 'none',
@@ -418,27 +370,9 @@ const ctaButton = {
   transition: 'all 0.3s ease'
 };
 
-// 添加悬停效果
-primaryButton.onmouseover = secondaryButton.onmouseover = 
-viewAllButton.onmouseover = ctaButton.onmouseover = function() {
-  this.style.transform = 'translateY(-2px)';
-  this.style.boxShadow = `0 4px 12px ${colors.darkBrownDark}`;
+contactButton[':hover'] = {
+  backgroundColor: colors.tealDark,
+  transform: 'translateY(-2px)'
 };
-
-primaryButton.onmouseout = secondaryButton.onmouseout = 
-viewAllButton.onmouseout = ctaButton.onmouseout = function() {
-  this.style.transform = 'translateY(0)';
-  this.style.boxShadow = 'none';
-};
-
-blogCard.onmouseover = function() {
-  Object.assign(this.style, blogCardHover);
-};
-
-blogCard.onmouseout = function() {
-  this.style.transform = 'translateY(0)';
-  this.style.boxShadow = 'none';
-};
-
 
 export default Home;
