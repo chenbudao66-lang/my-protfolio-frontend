@@ -52,13 +52,15 @@ function Blog() {
     setSelectedPost(updatedPost);
   };
 
-  const handleCreatePost = () => {
-    if (isAuthenticated()) {
-      navigate('/admin');
-    } else {
-      navigate('/login');
-    }
-  };
+const handleCreatePost = () => {
+  if (isAuthenticated()) {
+    // 直接跳转到创建文章的页面或打开创建模态框
+    // 我们先简单处理，跳转到admin页面
+    navigate('/admin?action=create');
+  } else {
+    navigate('/login');
+  }
+};
 
   if (loading) {
     return (
@@ -94,22 +96,22 @@ function Blog() {
         <p style={subtitleStyle}>思想与灵感的记录</p>
         <div style={ornamentStyle}>❧</div>
         
-        <button 
-          onClick={handleCreatePost}
-          style={createButton}
-          onMouseEnter={(e) => {
-            e.target.style.backgroundColor = colors.tealDark;
-            e.target.style.transform = 'translateY(-2px)';
-            e.target.style.boxShadow = `0 4px 15px ${colors.darkBrownDark}50`;
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.backgroundColor = colors.teal;
-            e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = `0 2px 10px ${colors.darkBrownDark}30`;
-          }}
-        >
-          ✍🏻️ 写下灵感
-        </button>
+       <button 
+        onClick={handleCreatePost}
+        style={createButton}
+        onMouseEnter={(e) => {
+          e.target.style.backgroundColor = colors.tealDark;
+          e.target.style.transform = 'translateY(-2px)';
+          e.target.style.boxShadow = `0 4px 15px ${colors.darkBrownDark}50`;
+        }}
+        onMouseLeave={(e) => {
+          e.target.style.backgroundColor = colors.teal;
+          e.target.style.transform = 'translateY(0)';
+          e.target.style.boxShadow = `0 2px 10px ${colors.darkBrownDark}30`;
+        }}
+      >
+        {isAuthenticated() ? '✍🏻️ 创作文章' : '✍🏻️ 登录后创作'}
+       </button>
       </div>
 
       <div style={blogGridStyle}>
