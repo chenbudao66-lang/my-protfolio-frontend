@@ -95,7 +95,10 @@ function Home() {
       onClick={() => handlePostClick(post)}
     >
       <div style={blogCardDecoration}></div>
-      <h3 style={blogTitle}>{post.title}</h3>
+      <h3 style={blogTitle}>
+         {post.title}
+         <div style={titleDecoration}></div>
+      </h3>      
       <p style={blogExcerpt}>{post.excerpt}</p>
       <div style={blogMeta}>
         <span style={blogDate}>{post.createdAt}</span>
@@ -290,7 +293,7 @@ const blogGrid = {
 
 const blogCard = {
   backgroundColor: colors.overlayLight,
-  padding: '1.5rem', // 从 2rem 改为 1.5rem
+  padding: '1.5rem',
   borderRadius: '12px',
   border: `2px solid ${colors.darkBrown}`,
   cursor: 'pointer',
@@ -301,12 +304,14 @@ const blogCard = {
   justifyContent: 'space-between',
   position: 'relative',
   overflow: 'hidden',
-  minHeight: '180px' // 添加最小高度确保一致性
+  minHeight: '180px',
+  boxShadow: `0 4px 15px ${colors.darkBrownDark}20` // 添加阴影增加层次感
 };
 
 blogCard[':hover'] = {
-  transform: 'translateY(-4px)',
-  boxShadow: `0 8px 25px ${colors.darkBrownDark}`
+  transform: 'translateY(-6px)', // 增加悬停上移距离
+  boxShadow: `0 8px 30px ${colors.darkBrownDark}30`, // 增强阴影
+  borderColor: colors.teal // 悬停时边框变色
 };
 
 const blogCardDecoration = {
@@ -322,17 +327,31 @@ const blogCardDecoration = {
 
 const blogTitle = {
   color: colors.darkBrown,
-  fontSize: '1.2rem', // 从 1.4rem 改为 1.2rem
-  marginBottom: '0.8rem', // 从 1rem 改为 0.8rem
-  fontWeight: 'normal'
+  fontSize: '1.2rem',
+  marginBottom: '0.8rem',
+  fontWeight: '600', // 改为中等粗体
+  borderBottom: `1px solid ${colors.teal}30`, // 添加底部边框线
+  paddingBottom: '0.5rem', // 增加底部内边距
+  position: 'relative'
+};
+
+const titleDecoration = {
+  position: 'absolute',
+  bottom: '0',
+  left: '0',
+  width: '30px',
+  height: '2px',
+  backgroundColor: colors.teal,
+  borderRadius: '1px'
 };
 
 const blogExcerpt = {
   color: colors.darkBrown,
-  lineHeight: '1.5', // 从 1.6 改为 1.5
-  marginBottom: '1rem', // 从 1.5rem 改为 1rem
+  lineHeight: '1.5',
+  marginBottom: '1rem',
   flex: 1,
-  fontSize: '0.95rem' // 稍微缩小字体
+  fontSize: '0.95rem',
+  opacity: 0.8 // 降低不透明度，与标题形成对比
 };
 
 const blogMeta = {
@@ -340,7 +359,9 @@ const blogMeta = {
   justifyContent: 'space-between',
   alignItems: 'center',
   marginTop: 'auto',
-  fontSize: '0.85rem' // 缩小元信息字体
+  fontSize: '0.85rem',
+  paddingTop: '0.8rem', // 增加顶部内边距
+  borderTop: `1px solid ${colors.darkBrown}20` // 添加顶部边框线
 };
 
 const blogDate = {
