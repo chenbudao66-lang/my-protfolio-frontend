@@ -24,7 +24,7 @@ function Header() {
           <li style={navItemStyle}><Link to="/projects" style={linkStyle}>项目</Link></li>
           <li style={navItemStyle}><Link to="/blog" style={linkStyle}>博客</Link></li>
           <li style={navItemStyle}><Link to="/contact" style={linkStyle}>联系</Link></li>
-          
+         
          // 在 Header.js 的导航部分，找到登录链接，修改为：
 {isAuthenticated() ? (
   <>
