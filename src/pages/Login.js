@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { colors } from '../styles/colors';
-import { mockAPI } from '../services/mockData';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -9,6 +9,7 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,14 +17,13 @@ function Login() {
     setError('');
 
     try {
-      // 使用模拟API进行登录
-      const response = await mockAPI.auth.login({ email, password });
+      const result = await login(email, password);
       
-      if (response.success) {
-        const { user, token } = response.data;
-        login(user, token);
-        // 在实际应用中，这里可以重定向到管理页面或其他页面
-        alert('登录成功！');
+      if (result.success) {
+        // 登录成功，跳转到博客页面
+        navigate('/blog');
+      } else {
+        setError(result.error);
       }
     } catch (err) {
       setError('登录失败: ' + err.message);
@@ -39,7 +39,7 @@ function Login() {
         
         {error && (
           <div style={errorStyle}>
-            <p style={errorText}>{error}</p >
+            <p style={errorText}>{error}</p>
           </div>
         )}
         
@@ -53,6 +53,7 @@ function Login() {
               style={inputStyle}
               required
               disabled={loading}
+              placeholder="请输入邮箱"
             />
           </div>
           
@@ -65,6 +66,8 @@ function Login() {
               style={inputStyle}
               required
               disabled={loading}
+              placeholder="请输入密码"
+              minLength="6"
             />
           </div>
           
@@ -78,14 +81,16 @@ function Login() {
         </form>
         
         <div style={demoInfo}>
-          <p style={demoText}>演示说明：</p >
-          <p style={demoText}>输入任意邮箱和密码即可登录</p >
-          <p style={demoText}>这是模拟登录功能</p >
+          <p style={demoText}>需要先注册账号才能登录</p>
+          <p style={demoText}>密码至少6位字符</p>
         </div>
       </div>
     </div>
   );
 }
+
+// 样式定义保持不变...
+// [这里保持原有的所有样式定义]
 
 // 样式定义
 const pageStyle = {

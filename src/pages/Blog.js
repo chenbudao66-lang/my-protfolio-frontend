@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { colors } from '../styles/colors';
 import { blogManager } from '../services/mockData';
 import BlogModal from '../components/BlogModal';
@@ -9,6 +11,8 @@ function Blog() {
   const [error, setError] = useState(null);
   const [selectedPost, setSelectedPost] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -38,7 +42,6 @@ function Blog() {
   };
 
   const handleUpdatePost = (updatedPost) => {
-    // 更新文章列表中的文章数据
     const updatedPosts = posts.map(post => 
       post.id === updatedPost.id ? updatedPost : post
     );
@@ -46,6 +49,15 @@ function Blog() {
     setSelectedPost(updatedPost);
   };
 
+  const handleCreatePost = () => {
+    if (isAuthenticated()) {
+      navigate('/admin');
+    } else {
+      navigate('/login');
+    }
+  };
+
+  // 原有的加载、错误状态和返回部分保持不变...
   if (loading) {
     return (
       <div style={pageStyle}>
@@ -79,13 +91,27 @@ function Blog() {
         <h1 style={titleStyle}>艺术随笔</h1>
         <p style={subtitleStyle}>思想与灵感的记录</p>
         <div style={ornamentStyle}>❧</div>
+        
+        {/* 添加"写下灵感"按钮 */}
+        <button 
+          onClick={handleCreatePost}
+          style={createButton}
+        >
+          ✍️ 写下灵感
+        </button>
       </div>
 
       <div style={articlesList}>
         {posts.length === 0 ? (
           <div style={emptyState}>
             <h3 style={emptyTitle}>暂无文章</h3>
-            <p style={emptyText}>还没有发布任何博客文章，快去管理后台创建第一篇吧！</p>
+            <p style={emptyText}>还没有发布任何博客文章</p>
+            <button 
+              onClick={handleCreatePost}
+              style={createButton}
+            >
+              ✍️ 写下第一篇文章
+            </button>
           </div>
         ) : (
           posts.map(post => (
@@ -342,6 +368,25 @@ const retryButton = {
   fontSize: '1rem',
   cursor: 'pointer',
   transition: 'all 0.3s ease'
+};
+
+const createButton = {
+  padding: '0.8rem 1.5rem',
+  backgroundColor: colors.teal,
+  color: colors.cream,
+  border: 'none',
+  borderRadius: '8px',
+  fontSize: '1rem',
+  cursor: 'pointer',
+  transition: 'all 0.3s ease',
+  marginTop: '1rem',
+  boxShadow: `0 2px 10px ${colors.darkBrownDark}30`
+};
+
+createButton[':hover'] = {
+  backgroundColor: colors.tealDark,
+  transform: 'translateY(-2px)',
+  boxShadow: `0 4px 15px ${colors.darkBrownDark}50`
 };
 
 // 添加CSS动画
