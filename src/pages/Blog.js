@@ -171,21 +171,18 @@ const ornamentStyle = {
 const articlesList = {
   display: 'flex',
   flexDirection: 'column',
-  gap: '2rem',
+  gap: '2.5rem',  // 从 2rem 增加到 2.5rem
   marginBottom: '4rem'
 };
 
 const articleCard = {
   border: `1px solid ${colors.darkBrown}`,
   backgroundColor: colors.overlayLight,
-  padding: '2rem',
+  padding: '2.5rem',  // 从 2rem 增加到 2.5rem，让内容更宽松
   borderRadius: '8px',
   transition: 'all 0.3s ease',
   cursor: 'pointer',
-  ':hover': {
-    transform: 'translateY(-2px)',
-    boxShadow: `0 4px 12px ${colors.darkBrownDark}`
-  }
+  marginBottom: '1rem'  // 添加底部外边距
 };
 
 const articleHeader = {
@@ -223,7 +220,10 @@ const articleFooter = {
   justifyContent: 'space-between',
   alignItems: 'center',
   flexWrap: 'wrap',
-  gap: '1rem'
+  gap: '1rem',
+  marginTop: '1.5rem',  // 添加这个，增加上边距
+  paddingTop: '1rem',   // 添加这个，增加内边距
+  borderTop: `1px solid ${colors.creamDark}`  // 添加分隔线
 };
 
 const tagsContainer = {
