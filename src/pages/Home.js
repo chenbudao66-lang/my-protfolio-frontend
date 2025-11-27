@@ -363,7 +363,7 @@ const noPostsText = {
 
 const viewAllButton = {
   display: 'block',
-  margin: '3rem auto 0 auto', // 修改这里：上边距 2rem，其他边 auto
+  margin: '4rem auto 0 auto', // 修改这里：上边距 2rem，其他边 auto
   padding: '0.8rem 1.5rem', // 稍微缩小内边距
   backgroundColor: 'transparent',
   color: colors.teal,
