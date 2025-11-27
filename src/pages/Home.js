@@ -249,10 +249,11 @@ const skillDescription = {
 
 // 博客区域样式
 const blogSection = {
-  padding: '4rem 2rem',
-  backgroundColor: colors.cream
+  padding: '4rem 0',
+  borderTop: `1px solid ${colors.darkBrown}`,
+  marginTop: '3rem', // 添加上边距
+  position: 'relative' // 确保正常布局
 };
-
 const sectionTitle = {
   color: colors.darkBrown,
   fontSize: '2.5rem',
@@ -271,10 +272,9 @@ const sectionSubtitle = {
 
 const blogGrid = {
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
   gap: '2rem',
-  maxWidth: '1200px',
-  margin: '0 auto 3rem'
+  marginBottom: '3rem' // 增加底部间距
 };
 
 const blogCard = {
@@ -366,6 +366,8 @@ const viewAllContainer = {
 };
 
 const viewAllButton = {
+  display: 'block',
+  margin: '0 auto',
   padding: '1rem 2rem',
   backgroundColor: 'transparent',
   color: colors.teal,
@@ -373,7 +375,10 @@ const viewAllButton = {
   borderRadius: '4px',
   cursor: 'pointer',
   fontSize: '1.1rem',
-  transition: 'all 0.3s ease'
+  transition: 'all 0.3s ease',
+  textDecoration: 'none',
+  textAlign: 'center',
+  width: 'fit-content'
 };
 
 // 召唤区域样式
@@ -434,5 +439,6 @@ blogCard.onmouseout = function() {
   this.style.transform = 'translateY(0)';
   this.style.boxShadow = 'none';
 };
+
 
 export default Home;
