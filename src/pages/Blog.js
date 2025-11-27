@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { colors } from '../styles/colors';
 import { blogManager } from '../services/mockData';
 
@@ -6,6 +7,7 @@ function Blog() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -25,12 +27,16 @@ function Blog() {
     fetchPosts();
   }, []);
 
+  const handlePostClick = (postId) => {
+    navigate(`/blog/${postId}`);
+  };
+
   if (loading) {
     return (
       <div style={pageStyle}>
         <div style={loadingStyle}>
           <div style={spinnerStyle}></div>
-          <p style={loadingText}>加载文章中...</p >
+          <p style={loadingText}>加载文章中...</p>
         </div>
       </div>
     );
@@ -40,7 +46,7 @@ function Blog() {
     return (
       <div style={pageStyle}>
         <div style={errorStyle}>
-          <p style={errorText}>{error}</p >
+          <p style={errorText}>{error}</p>
           <button 
             onClick={() => window.location.reload()} 
             style={retryButton}
@@ -56,7 +62,7 @@ function Blog() {
     <div style={pageStyle}>
       <div style={headerSection}>
         <h1 style={titleStyle}>艺术随笔</h1>
-        <p style={subtitleStyle}>思想与灵感的记录</p >
+        <p style={subtitleStyle}>思想与灵感的记录</p>
         <div style={ornamentStyle}>❧</div>
       </div>
 
@@ -64,16 +70,20 @@ function Blog() {
         {posts.length === 0 ? (
           <div style={emptyState}>
             <h3 style={emptyTitle}>暂无文章</h3>
-            <p style={emptyText}>还没有发布任何博客文章，快去管理后台创建第一篇吧！</p >
+            <p style={emptyText}>还没有发布任何博客文章，快去管理后台创建第一篇吧！</p>
           </div>
         ) : (
           posts.map(post => (
-            <div key={post.id} style={articleCard}>
+            <div 
+              key={post.id} 
+              style={articleCard}
+              onClick={() => handlePostClick(post.id)}
+            >
               <div style={articleHeader}>
                 <h3 style={articleTitle}>{post.title}</h3>
                 <span style={articleDate}>{post.createdAt}</span>
               </div>
-              <p style={articleExcerpt}>{post.excerpt}</p >
+              <p style={articleExcerpt}>{post.excerpt}</p>
               <div style={articleFooter}>
                 <div style={tagsContainer}>
                   {post.tags.map(tag => (
@@ -81,7 +91,7 @@ function Blog() {
                   ))}
                 </div>
                 <div style={articleStats}>
-                  <span style={commentCount}>💬 {post.comments.length} 条评论</span>
+                  <span style={commentCount}>💬 {post.comments ? post.comments.length : 0} 条评论</span>
                 </div>
               </div>
             </div>
@@ -93,8 +103,8 @@ function Blog() {
         <p style={quoteText}>
           "写作是思想的绘画，<br/>
           每一篇文章都是心灵的风景。"
-        </p >
-        <p style={signature}>— Channing Winchester —</p >
+        </p>
+        <p style={signature}>— Channing Winchester —</p>
       </div>
     </div>
   );
@@ -147,12 +157,11 @@ const articleCard = {
   padding: '2rem',
   borderRadius: '8px',
   transition: 'all 0.3s ease',
-  cursor: 'pointer'
-};
-
-articleCard[':hover'] = {
-  transform: 'translateY(-2px)',
-  boxShadow: `0 4px 12px ${colors.darkBrownDark}`
+  cursor: 'pointer',
+  ':hover': {
+    transform: 'translateY(-2px)',
+    boxShadow: `0 4px 12px ${colors.darkBrownDark}`
+  }
 };
 
 const articleHeader = {
@@ -312,13 +321,13 @@ const retryButton = {
 };
 
 // 添加CSS动画
-const styles = document.createElement('style');
-styles.textContent = `
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
+const styleSheet = document.styleSheets[0];
+const keyframes = `
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 `;
-document.head.appendChild(styles);
+styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
 
 export default Blog;

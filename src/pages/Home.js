@@ -1,77 +1,150 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { colors } from '../styles/colors';
+import { blogManager } from '../services/mockData';
 
 function Home() {
+  const navigate = useNavigate();
+  const [recentPosts, setRecentPosts] = useState([]);
+
+  useEffect(() => {
+    // 获取最新的3篇博客文章
+    const posts = blogManager.getAllPosts().slice(0, 3);
+    setRecentPosts(posts);
+  }, []);
+
   return (
     <div style={pageStyle}>
-      <div style={heroSection}>
+      {/* 英雄区域 */}
+      <section style={heroSection}>
         <div style={heroContent}>
-          <h1 style={titleStyle}>Channing Winchester</h1>
-          <p style={subtitleStyle}>创意设计师 & 全栈开发者</p >
-          <div style={divider}></div>
-          <p style={description}>
-            专注于创造美观且功能强大的数字体验。<br/>
-            将设计思维与现代技术完美融合。
-          </p >
-          <div style={ctaButtons}>
-            <button style={primaryButton}>浏览作品</button>
-            <button style={secondaryButton}>了解更多</button>
+          <h1 style={heroTitle}>Channing Winchester</h1>
+          <p style={heroSubtitle}>数字艺术家 & 创意开发者</p>
+          <div style={ornamentStyle}>❧</div>
+          <p style={heroDescription}>
+            融合古典美学与现代技术，创造独特的数字艺术体验。<br/>
+            受穆夏启发的创作，探索艺术与科技的边界。
+          </p>
+          <div style={heroButtons}>
+            <button 
+              onClick={() => navigate('/projects')}
+              style={primaryButton}
+            >
+              探索作品
+            </button>
+            <button 
+              onClick={() => navigate('/contact')}
+              style={secondaryButton}
+            >
+              联系我
+            </button>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div style={aboutSection}>
-        <div style={aboutContent}>
-          <div style={textContent}>
-            <h2 style={sectionTitle}>关于我</h2>
-            <p style={aboutText}>
-              我是一名充满激情的创意专业人士，专注于用户体验设计和全栈开发。
-              我相信好的设计不仅仅是美观，更重要的是解决问题和创造价值。
-            </p >
-            <p style={aboutText}>
-              我的工作融合了艺术眼光和技术实现，致力于为每个项目带来独特的视觉语言和流畅的用户体验。
-            </p >
-            <p style={signature}>— Channing Winchester —</p >
+      {/* 技能简介 */}
+      <section style={skillsSection}>
+        <div style={skillsGrid}>
+          <div style={skillCard}>
+            <div style={skillIcon}>🎨</div>
+            <h3 style={skillTitle}>数字艺术</h3>
+            <p style={skillDescription}>
+              受新艺术运动启发的视觉创作，融合自然形态与优雅线条
+            </p>
           </div>
-          <div style={imagePlaceholder}></div>
+          <div style={skillCard}>
+            <div style={skillIcon}>💻</div>
+            <h3 style={skillTitle}>前端开发</h3>
+            <p style={skillDescription}>
+              构建现代、响应式的用户体验，注重细节与性能
+            </p>
+          </div>
+          <div style={skillCard}>
+            <div style={skillIcon}>✍️</div>
+            <h3 style={skillTitle}>创意写作</h3>
+            <p style={skillDescription}>
+              分享艺术见解与技术思考，记录创作历程
+            </p>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div style={servicesSection}>
-        <h2 style={sectionTitle}>我的服务</h2>
-        <div style={servicesGrid}>
-          <div style={serviceCard}>
-            <div style={serviceIcon}>🎨</div>
-            <h3 style={serviceTitle}>UI/UX 设计</h3>
-            <p style={serviceText}>用户界面与体验设计</p >
-          </div>
-          <div style={serviceCard}>
-            <div style={serviceIcon}>💻</div>
-            <h3 style={serviceTitle}>前端开发</h3>
-            <p style={serviceText}>响应式网站与应用</p >
-          </div>
-          <div style={serviceCard}>
-            <div style={serviceIcon}>📱</div>
-            <h3 style={serviceTitle}>品牌设计</h3>
-            <p style={serviceText}>视觉识别系统</p >
-          </div>
+      {/* 博客预览部分 */}
+      <section style={blogSection}>
+        <h2 style={sectionTitle}>最新文章</h2>
+        <p style={sectionSubtitle}>思想与灵感的记录</p>
+        <div style={blogGrid}>
+          {recentPosts.map(post => (
+            <div 
+              key={post.id} 
+              style={blogCard}
+              onClick={() => navigate(`/blog/${post.id}`)}
+            >
+              <h3 style={blogTitle}>{post.title}</h3>
+              <p style={blogExcerpt}>{post.excerpt}</p>
+              <div style={blogMeta}>
+                <span style={blogDate}>{post.createdAt}</span>
+                <span style={blogComments}>💬 {post.comments.length}</span>
+              </div>
+              <div style={tagsContainer}>
+                {post.tags.slice(0, 3).map(tag => (
+                  <span key={tag} style={tagStyle}>{tag}</span>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
+        {recentPosts.length === 0 && (
+          <div style={emptyState}>
+            <h3 style={emptyTitle}>暂无文章</h3>
+            <p style={emptyText}>还没有发布任何博客文章</p>
+          </div>
+        )}
+        {recentPosts.length > 0 && (
+          <div style={viewAllContainer}>
+            <button 
+              onClick={() => navigate('/blog')}
+              style={viewAllButton}
+            >
+              查看所有文章 →
+            </button>
+          </div>
+        )}
+      </section>
+
+      {/* 召唤区域 */}
+      <section style={ctaSection}>
+        <div style={ctaContent}>
+          <h2 style={ctaTitle}>开始创作对话</h2>
+          <p style={ctaText}>
+            对某个项目感兴趣？想要讨论合作机会？<br/>
+            或者只是想聊聊艺术与技术的融合？
+          </p>
+          <button 
+            onClick={() => navigate('/contact')}
+            style={ctaButton}
+          >
+            取得联系
+          </button>
+        </div>
+      </section>
     </div>
   );
 }
 
-// 使用统一颜色方案
+// 样式定义
 const pageStyle = {
+  minHeight: '70vh',
   backgroundColor: colors.cream,
-  color: colors.darkBrown,
-  minHeight: '100vh'
+  color: colors.darkBrown
 };
 
+// 英雄区域样式
 const heroSection = {
   padding: '6rem 2rem 4rem',
   textAlign: 'center',
-  backgroundColor: colors.cream
+  background: `linear-gradient(135deg, ${colors.cream} 0%, ${colors.creamLight} 100%)`,
+  borderBottom: `1px solid ${colors.darkBrown}`
 };
 
 const heroContent = {
@@ -79,36 +152,35 @@ const heroContent = {
   margin: '0 auto'
 };
 
-const titleStyle = {
+const heroTitle = {
+  fontSize: '4rem',
   color: colors.darkBrown,
-  fontSize: '3.5rem',
   marginBottom: '1rem',
-  fontWeight: 'bold'
+  fontWeight: 'normal',
+  letterSpacing: '2px'
 };
 
-const subtitleStyle = {
+const heroSubtitle = {
+  fontSize: '1.5rem',
   color: colors.teal,
-  fontSize: '1.4rem',
   marginBottom: '2rem',
-  fontWeight: '300'
+  fontStyle: 'italic'
 };
 
-const divider = {
-  width: '100px',
-  height: '3px',
-  backgroundColor: colors.darkBrown,
-  margin: '2rem auto',
-  borderRadius: '2px'
+const ornamentStyle = {
+  fontSize: '3rem',
+  color: colors.teal,
+  marginBottom: '2rem'
 };
 
-const description = {
-  color: colors.darkBrown,
-  fontSize: '1.3rem',
+const heroDescription = {
+  fontSize: '1.2rem',
   lineHeight: '1.8',
-  marginBottom: '3rem'
+  marginBottom: '3rem',
+  color: colors.darkBrown
 };
 
-const ctaButtons = {
+const heroButtons = {
   display: 'flex',
   gap: '1rem',
   justifyContent: 'center',
@@ -116,7 +188,7 @@ const ctaButtons = {
 };
 
 const primaryButton = {
-  padding: '0.8rem 2rem',
+  padding: '1rem 2rem',
   backgroundColor: colors.darkBrown,
   color: colors.cream,
   border: 'none',
@@ -127,7 +199,7 @@ const primaryButton = {
 };
 
 const secondaryButton = {
-  padding: '0.8rem 2rem',
+  padding: '1rem 2rem',
   backgroundColor: 'transparent',
   color: colors.darkBrown,
   border: `2px solid ${colors.darkBrown}`,
@@ -137,60 +209,13 @@ const secondaryButton = {
   transition: 'all 0.3s ease'
 };
 
-const aboutSection = {
-  padding: '5rem 2rem',
-  backgroundColor: colors.cream
+// 技能区域样式
+const skillsSection = {
+  padding: '4rem 2rem',
+  backgroundColor: colors.overlayLight
 };
 
-const aboutContent = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '4rem',
-  maxWidth: '1200px',
-  margin: '0 auto',
-  flexWrap: 'wrap'
-};
-
-const textContent = {
-  flex: 1,
-  minWidth: '300px'
-};
-
-const sectionTitle = {
-  color: colors.darkBrown,
-  fontSize: '2.5rem',
-  marginBottom: '2rem'
-};
-
-const aboutText = {
-  color: colors.darkBrown,
-  fontSize: '1.1rem',
-  lineHeight: '1.7',
-  marginBottom: '1.5rem'
-};
-
-const signature = {
-  color: colors.teal,
-  fontSize: '1.1rem',
-  fontStyle: 'italic',
-  marginTop: '2rem'
-};
-
-const imagePlaceholder = {
-  width: '300px',
-  height: '400px',
-  backgroundColor: colors.darkBrown,
-  borderRadius: '8px',
-  flexShrink: 0
-};
-
-const servicesSection = {
-  padding: '5rem 2rem',
-  backgroundColor: colors.cream,
-  textAlign: 'center'
-};
-
-const servicesGrid = {
+const skillsGrid = {
   display: 'grid',
   gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
   gap: '2rem',
@@ -198,28 +223,216 @@ const servicesGrid = {
   margin: '0 auto'
 };
 
-const serviceCard = {
-  padding: '2.5rem 2rem',
+const skillCard = {
+  textAlign: 'center',
+  padding: '2rem',
+  backgroundColor: colors.cream,
+  borderRadius: '8px',
+  border: `1px solid ${colors.darkBrown}`
+};
+
+const skillIcon = {
+  fontSize: '3rem',
+  marginBottom: '1rem'
+};
+
+const skillTitle = {
+  color: colors.darkBrown,
+  fontSize: '1.3rem',
+  marginBottom: '1rem'
+};
+
+const skillDescription = {
+  color: colors.darkBrown,
+  lineHeight: '1.6'
+};
+
+// 博客区域样式
+const blogSection = {
+  padding: '4rem 2rem',
+  backgroundColor: colors.cream
+};
+
+const sectionTitle = {
+  color: colors.darkBrown,
+  fontSize: '2.5rem',
+  textAlign: 'center',
+  marginBottom: '1rem',
+  fontWeight: 'normal'
+};
+
+const sectionSubtitle = {
+  color: colors.teal,
+  fontSize: '1.2rem',
+  textAlign: 'center',
+  marginBottom: '3rem',
+  fontStyle: 'italic'
+};
+
+const blogGrid = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+  gap: '2rem',
+  maxWidth: '1200px',
+  margin: '0 auto 3rem'
+};
+
+const blogCard = {
+  backgroundColor: colors.overlayLight,
+  padding: '2rem',
+  borderRadius: '8px',
+  border: `1px solid ${colors.darkBrown}`,
+  cursor: 'pointer',
+  transition: 'all 0.3s ease',
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column'
+};
+
+// 添加悬停效果
+const blogCardHover = {
+  transform: 'translateY(-4px)',
+  boxShadow: `0 8px 25px ${colors.darkBrownDark}`
+};
+
+const blogTitle = {
+  color: colors.darkBrown,
+  fontSize: '1.4rem',
+  marginBottom: '1rem',
+  fontWeight: 'normal'
+};
+
+const blogExcerpt = {
+  color: colors.darkBrown,
+  lineHeight: '1.6',
+  marginBottom: '1.5rem',
+  flex: 1
+};
+
+const blogMeta = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: '1rem'
+};
+
+const blogDate = {
+  color: colors.teal,
+  fontSize: '0.9rem'
+};
+
+const blogComments = {
+  color: colors.teal,
+  fontSize: '0.9rem'
+};
+
+const tagsContainer = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '0.5rem'
+};
+
+const tagStyle = {
+  padding: '0.2rem 0.6rem',
+  backgroundColor: colors.teal,
+  color: colors.cream,
+  fontSize: '0.8rem',
+  borderRadius: '4px'
+};
+
+const emptyState = {
+  textAlign: 'center',
+  padding: '4rem 2rem',
   backgroundColor: colors.overlayLight,
   borderRadius: '8px',
   border: `1px solid ${colors.darkBrown}`,
-  transition: 'all 0.3s ease'
+  maxWidth: '600px',
+  margin: '0 auto'
 };
 
-const serviceIcon = {
-  fontSize: '3rem',
-  marginBottom: '1.5rem'
-};
-
-const serviceTitle = {
+const emptyTitle = {
   color: colors.darkBrown,
   fontSize: '1.5rem',
   marginBottom: '1rem'
 };
 
-const serviceText = {
+const emptyText = {
+  color: colors.teal,
+  fontSize: '1.1rem'
+};
+
+const viewAllContainer = {
+  textAlign: 'center'
+};
+
+const viewAllButton = {
+  padding: '1rem 2rem',
+  backgroundColor: 'transparent',
+  color: colors.teal,
+  border: `2px solid ${colors.teal}`,
+  borderRadius: '4px',
+  cursor: 'pointer',
+  fontSize: '1.1rem',
+  transition: 'all 0.3s ease'
+};
+
+// 召唤区域样式
+const ctaSection = {
+  padding: '4rem 2rem',
+  backgroundColor: colors.overlayLight,
+  borderTop: `1px solid ${colors.darkBrown}`
+};
+
+const ctaContent = {
+  maxWidth: '600px',
+  margin: '0 auto',
+  textAlign: 'center'
+};
+
+const ctaTitle = {
   color: colors.darkBrown,
-  lineHeight: '1.6'
+  fontSize: '2rem',
+  marginBottom: '1rem'
+};
+
+const ctaText = {
+  color: colors.darkBrown,
+  fontSize: '1.2rem',
+  lineHeight: '1.6',
+  marginBottom: '2rem'
+};
+
+const ctaButton = {
+  padding: '1rem 2rem',
+  backgroundColor: colors.teal,
+  color: colors.cream,
+  border: 'none',
+  borderRadius: '4px',
+  fontSize: '1.1rem',
+  cursor: 'pointer',
+  transition: 'all 0.3s ease'
+};
+
+// 添加悬停效果
+primaryButton.onmouseover = secondaryButton.onmouseover = 
+viewAllButton.onmouseover = ctaButton.onmouseover = function() {
+  this.style.transform = 'translateY(-2px)';
+  this.style.boxShadow = `0 4px 12px ${colors.darkBrownDark}`;
+};
+
+primaryButton.onmouseout = secondaryButton.onmouseout = 
+viewAllButton.onmouseout = ctaButton.onmouseout = function() {
+  this.style.transform = 'translateY(0)';
+  this.style.boxShadow = 'none';
+};
+
+blogCard.onmouseover = function() {
+  Object.assign(this.style, blogCardHover);
+};
+
+blogCard.onmouseout = function() {
+  this.style.transform = 'translateY(0)';
+  this.style.boxShadow = 'none';
 };
 
 export default Home;
