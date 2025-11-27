@@ -12,20 +12,10 @@ function Home() {
   const [selectedPost, setSelectedPost] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  useEffect(() => {
+useEffect(() => {
   // 获取最新的3篇博客文章
-  const fetchRecentPosts = async () => {
-    try {
-      const response = await blogAPI.getAll();
-      const allPosts = response.data || response;
-      const posts = allPosts.slice(0, 3); // 取最新的3篇
-      setRecentPosts(posts);
-    } catch (err) {
-      console.error('Error fetching recent posts:', err);
-    }
-  };
-
-  fetchRecentPosts();
+  const posts = blogManager.getAllPosts().slice(0, 3); // 使用模拟数据
+  setRecentPosts(posts);
 }, []);
 
   const handlePostClick = (post) => {

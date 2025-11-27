@@ -3,7 +3,6 @@ import { useAuth } from '../context/AuthContext';
 import { colors } from '../styles/colors';
 import { blogManager } from '../services/mockData';
 import BlogEditor from '../components/BlogEditor';
-import { blogAPI } from '../services/api';
 
 function Admin() {
   const { user, logout } = useAuth();
@@ -18,14 +17,9 @@ function Admin() {
     loadBlogPosts();
   }, []);
 
- const loadBlogPosts = async () => {
-  try {
-    const response = await blogAPI.getAll();
-    setBlogPosts(response.data || response);
-  } catch (err) {
-    console.error('Error loading blog posts:', err);
-    alert('加载博客文章失败');
-  }
+ const loadBlogPosts = () => {
+  const posts = blogManager.getAllPosts();
+  setBlogPosts(posts);
 };
 
   const handleLogout = () => {
@@ -43,35 +37,27 @@ function Admin() {
     setShowEditor(true);
   };
 
-  const handleSavePost = async (postData) => {
-  try {
-    if (editingPost) {
-      // 更新现有文章
-      await blogAPI.update(editingPost._id || editingPost.id, postData);
-      alert('文章更新成功！');
-    } else {
-      // 创建新文章
-      await blogAPI.create(postData);
-      alert('文章发布成功！');
-    }
-    
-    setShowEditor(false);
-    setEditingPost(null);
-    await loadBlogPosts(); // 重新加载文章列表
-  } catch (err) {
-    alert('操作失败: ' + err.message);
+ const handleSavePost = (postData) => {
+  if (editingPost) {
+    // 更新现有文章
+    blogManager.updatePost(editingPost.id, postData);
+    alert('文章更新成功！');
+  } else {
+    // 创建新文章
+    blogManager.createPost(postData);
+    alert('文章发布成功！');
   }
+  
+  setShowEditor(false);
+  setEditingPost(null);
+  loadBlogPosts(); // 重新加载文章列表
 };
 
-  const handleDeleteBlogPost = async (postId) => {
+ const handleDeleteBlogPost = (postId) => {
   if (window.confirm('确定要删除这篇文章吗？此操作无法撤销。')) {
-    try {
-      await blogAPI.delete(postId);
-      await loadBlogPosts();
-      alert('文章已删除');
-    } catch (err) {
-      alert('删除失败: ' + err.message);
-    }
+    blogManager.deletePost(postId);
+    loadBlogPosts();
+    alert('文章已删除');
   }
 };
 

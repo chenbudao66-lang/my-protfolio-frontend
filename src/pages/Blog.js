@@ -5,7 +5,6 @@ import { colors } from '../styles/colors';
 import { blogManager } from '../services/mockData';
 import BlogModal from '../components/BlogModal';
 import BlogCard from '../components/BlogCard';
-import { blogAPI } from '../services/api';
 
 function Blog() {
   const [posts, setPosts] = useState([]);
@@ -16,13 +15,12 @@ function Blog() {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
- useEffect(() => {
+useEffect(() => {
   const fetchPosts = async () => {
     try {
       setLoading(true);
-      // 改为调用真实API
-      const response = await blogAPI.getAll();
-      setPosts(response.data || response); // 适配不同的响应格式
+      const blogPosts = blogManager.getAllPosts(); // 使用模拟数据
+      setPosts(blogPosts);
     } catch (err) {
       setError('获取博客文章失败: ' + err.message);
       console.error('Error fetching blog posts:', err);
