@@ -89,8 +89,7 @@ function Admin() {
         <p style={statLabel}>文章总数</p >
       </div>
       <div style={statCard}>
-        <h3 style={statNumber}>{blogPosts.reduce((acc, post) => acc + post.comments.length, 0)}</h3>
-        <p style={statLabel}>评论总数</p >
+      <h3 style={statNumber}>{blogPosts.reduce((acc, post) => acc + (post.comments ? post.comments.length : 0), 0)}</h3>        <p style={statLabel}>评论总数</p >
       </div>
       <div style={statCard}>
         <h3 style={statNumber}>{projects.length}</h3>
@@ -148,7 +147,7 @@ function Admin() {
               <p style={itemDescription}>{post.excerpt}</p >
               <div style={itemMeta}>
                 <span style={metaText}>发布于: {post.createdAt}</span>
-                <span style={metaText}>评论: {post.comments.length}</span>
+                <span style={metaText}>评论: {post.comments ? post.comments.length : 0}</span>
                 <span style={metaText}>标签: {post.tags.join(', ')}</span>
               </div>
             </div>
