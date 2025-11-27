@@ -97,7 +97,7 @@ function Blog() {
           onClick={handleCreatePost}
           style={createButton}
         >
-          ✍️ 写下灵感
+          📜 写下灵感
         </button>
       </div>
 
@@ -110,7 +110,7 @@ function Blog() {
               onClick={handleCreatePost}
               style={createButton}
             >
-              ✍️ 写下第一篇文章
+              ✍🏻️ 写下第一篇文章
             </button>
           </div>
         ) : (

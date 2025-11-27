@@ -25,22 +25,28 @@ function Header() {
           <li style={navItemStyle}><Link to="/blog" style={linkStyle}>博客</Link></li>
           <li style={navItemStyle}><Link to="/contact" style={linkStyle}>联系</Link></li>
           
-          {isAuthenticated() ? (
-            <>
-              <li style={navItemStyle}>
-                <Link to="/admin" style={linkStyle}>管理</Link>
-              </li>
-              <li style={navItemStyle}>
-                <button onClick={handleLogout} style={logoutButtonStyle}>
-                  退出
-                </button>
-              </li>
-            </>
-          ) : (
-            <li style={navItemStyle}>
-              <Link to="/login" style={linkStyle}>登录</Link>
-            </li>
-          )}
+         // 在 Header.js 的导航部分，找到登录链接，修改为：
+{isAuthenticated() ? (
+  <>
+    <li style={navItemStyle}>
+      <Link to="/admin" style={linkStyle}>管理</Link>
+    </li>
+    <li style={navItemStyle}>
+      <button onClick={handleLogout} style={logoutButtonStyle}>
+        退出
+      </button>
+    </li>
+  </>
+) : (
+  <>
+    <li style={navItemStyle}>
+      <Link to="/login" style={linkStyle}>登录</Link>
+    </li>
+    <li style={navItemStyle}>
+      <Link to="/register" style={linkStyle}>注册</Link>
+    </li>
+  </>
+)}
         </ul>
       </nav>
     </header>

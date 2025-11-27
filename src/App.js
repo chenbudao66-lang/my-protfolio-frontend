@@ -8,6 +8,7 @@ import Projects from './pages/Projects';
 import Blog from './pages/Blog';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
+import Register from './pages/Register'; // 添加这行
 import Admin from './pages/Admin';
 import { colors } from './styles/colors';
 import './App.css';
@@ -25,6 +26,7 @@ function App() {
               <Route path="/blog" element={<Blog />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} /> {/* 添加这行 */}
               <Route 
                 path="/admin" 
                 element={
@@ -41,6 +43,7 @@ function App() {
   );
 }
 
+// 其余样式保持不变...
 const appStyle = {
   minHeight: '100vh',
   background: colors.cream,
