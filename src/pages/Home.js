@@ -309,7 +309,7 @@ const noPostsText = {
 
 const viewAllButton = {
   display: 'block',
-  margin: '2rem auto 0 auto',
+  margin: '6rem auto 0 auto',
   padding: '0.8rem 1.5rem',
   backgroundColor: 'transparent',
   color: colors.teal,
