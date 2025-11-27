@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { colors } from '../styles/colors';
-import { mockAPI } from '../services/mockData';
+import { blogManager } from '../services/mockData';
 
 function Blog() {
   const [posts, setPosts] = useState([]);
@@ -11,8 +11,9 @@ function Blog() {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        const response = await mockAPI.blog.getAll();
-        setPosts(response.data);
+        // 使用真实的博客管理器获取文章
+        const blogPosts = blogManager.getAllPosts();
+        setPosts(blogPosts);
       } catch (err) {
         setError('获取博客文章失败: ' + err.message);
         console.error('Error fetching blog posts:', err);
@@ -60,23 +61,32 @@ function Blog() {
       </div>
 
       <div style={articlesList}>
-        {posts.map(post => (
-          <div key={post.id} style={articleCard}>
-            <div style={articleHeader}>
-              <h3 style={articleTitle}>{post.title}</h3>
-              <span style={articleDate}>{post.createdAt}</span>
-            </div>
-            <p style={articleExcerpt}>{post.excerpt}</p >
-            <div style={articleFooter}>
-              <div style={tagsContainer}>
-                {post.tags.map(tag => (
-                  <span key={tag} style={tagStyle}>{tag}</span>
-                ))}
-              </div>
-              <span style={readMore}>阅读更多 →</span>
-            </div>
+        {posts.length === 0 ? (
+          <div style={emptyState}>
+            <h3 style={emptyTitle}>暂无文章</h3>
+            <p style={emptyText}>还没有发布任何博客文章，快去管理后台创建第一篇吧！</p >
           </div>
-        ))}
+        ) : (
+          posts.map(post => (
+            <div key={post.id} style={articleCard}>
+              <div style={articleHeader}>
+                <h3 style={articleTitle}>{post.title}</h3>
+                <span style={articleDate}>{post.createdAt}</span>
+              </div>
+              <p style={articleExcerpt}>{post.excerpt}</p >
+              <div style={articleFooter}>
+                <div style={tagsContainer}>
+                  {post.tags.map(tag => (
+                    <span key={tag} style={tagStyle}>{tag}</span>
+                  ))}
+                </div>
+                <div style={articleStats}>
+                  <span style={commentCount}>💬 {post.comments.length} 条评论</span>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
 
       <div style={quoteSection}>
@@ -136,7 +146,13 @@ const articleCard = {
   backgroundColor: colors.overlayLight,
   padding: '2rem',
   borderRadius: '8px',
-  transition: 'all 0.3s ease'
+  transition: 'all 0.3s ease',
+  cursor: 'pointer'
+};
+
+articleCard[':hover'] = {
+  transform: 'translateY(-2px)',
+  boxShadow: `0 4px 12px ${colors.darkBrownDark}`
 };
 
 const articleHeader = {
@@ -191,13 +207,15 @@ const tagStyle = {
   borderRadius: '4px'
 };
 
-const readMore = {
+const articleStats = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '1rem'
+};
+
+const commentCount = {
   color: colors.teal,
-  fontSize: '1rem',
-  textDecoration: 'none',
-  fontStyle: 'italic',
-  cursor: 'pointer',
-  whiteSpace: 'nowrap'
+  fontSize: '0.9rem'
 };
 
 const quoteSection = {
@@ -219,6 +237,27 @@ const signature = {
   color: colors.teal,
   fontSize: '1.1rem',
   fontStyle: 'italic'
+};
+
+// 空状态样式
+const emptyState = {
+  textAlign: 'center',
+  padding: '4rem 2rem',
+  backgroundColor: colors.overlayLight,
+  borderRadius: '8px',
+  border: `1px solid ${colors.darkBrown}`
+};
+
+const emptyTitle = {
+  color: colors.darkBrown,
+  fontSize: '1.5rem',
+  marginBottom: '1rem'
+};
+
+const emptyText = {
+  color: colors.teal,
+  fontSize: '1.1rem',
+  lineHeight: '1.6'
 };
 
 // 加载状态样式
@@ -256,7 +295,7 @@ const errorStyle = {
 };
 
 const errorText = {
-  color: 'colors.darkBrown',
+  color: colors.darkBrown,
   fontSize: '1.2rem',
   marginBottom: '1.5rem'
 };
@@ -271,5 +310,15 @@ const retryButton = {
   cursor: 'pointer',
   transition: 'all 0.3s ease'
 };
+
+// 添加CSS动画
+const styles = document.createElement('style');
+styles.textContent = `
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;
+document.head.appendChild(styles);
 
 export default Blog;

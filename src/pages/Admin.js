@@ -1,45 +1,74 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { colors } from '../styles/colors';
-import { mockProjects, mockBlogPosts } from '../services/mockData';
+import { blogManager } from '../services/mockData';
+import BlogEditor from '../components/BlogEditor';
 
 function Admin() {
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [projects, setProjects] = useState([]);
   const [blogPosts, setBlogPosts] = useState([]);
+  const [showEditor, setShowEditor] = useState(false);
+  const [editingPost, setEditingPost] = useState(null);
 
   useEffect(() => {
-    // 加载初始数据
-    setProjects(mockProjects);
-    setBlogPosts(mockBlogPosts);
+    // 加载博客文章
+    loadBlogPosts();
   }, []);
+
+  const loadBlogPosts = () => {
+    const posts = blogManager.getAllPosts();
+    setBlogPosts(posts);
+  };
 
   const handleLogout = () => {
     logout();
     alert('已退出登录');
   };
 
-  const handleDeleteProject = (projectId) => {
-    if (window.confirm('确定要删除这个项目吗？')) {
-      setProjects(projects.filter(project => project.id !== projectId));
-      alert('项目已删除');
+  const handleCreatePost = () => {
+    setEditingPost(null);
+    setShowEditor(true);
+  };
+
+  const handleEditPost = (post) => {
+    setEditingPost(post);
+    setShowEditor(true);
+  };
+
+  const handleSavePost = async (postData) => {
+    if (editingPost) {
+      // 更新现有文章
+      blogManager.updatePost(editingPost.id, postData);
+    } else {
+      // 创建新文章
+      blogManager.createPost(postData);
+    }
+    
+    setShowEditor(false);
+    setEditingPost(null);
+    loadBlogPosts(); // 重新加载文章列表
+    alert(editingPost ? '文章更新成功！' : '文章发布成功！');
+  };
+
+  const handleDeleteBlogPost = (postId) => {
+    if (window.confirm('确定要删除这篇文章吗？此操作无法撤销。')) {
+      blogManager.deletePost(postId);
+      loadBlogPosts();
+      alert('文章已删除');
     }
   };
 
-  const handleDeletePost = (postId) => {
-    if (window.confirm('确定要删除这篇文章吗？')) {
-      setBlogPosts(blogPosts.filter(post => post.id !== postId));
-      alert('文章已删除');
+  const handleDeleteProject = (projectId) => {
+    if (window.confirm('确定要删除这个项目吗？')) {
+      // 这里可以添加删除项目的逻辑
+      alert('项目删除功能待实现');
     }
   };
 
   const renderDashboard = () => (
     <div style={dashboardGrid}>
-      <div style={statCard}>
-        <h3 style={statNumber}>{projects.length}</h3>
-        <p style={statLabel}>项目总数</p >
-      </div>
       <div style={statCard}>
         <h3 style={statNumber}>{blogPosts.length}</h3>
         <p style={statLabel}>文章总数</p >
@@ -47,6 +76,10 @@ function Admin() {
       <div style={statCard}>
         <h3 style={statNumber}>{blogPosts.reduce((acc, post) => acc + post.comments.length, 0)}</h3>
         <p style={statLabel}>评论总数</p >
+      </div>
+      <div style={statCard}>
+        <h3 style={statNumber}>{projects.length}</h3>
+        <p style={statLabel}>项目总数</p >
       </div>
     </div>
   );
@@ -88,7 +121,9 @@ function Admin() {
     <div>
       <div style={sectionHeader}>
         <h3 style={sectionTitle}>博客管理</h3>
-        <button style={addButton}>撰写新文章</button>
+        <button style={addButton} onClick={handleCreatePost}>
+          撰写新文章
+        </button>
       </div>
       <div style={listContainer}>
         {blogPosts.map(post => (
@@ -99,13 +134,19 @@ function Admin() {
               <div style={itemMeta}>
                 <span style={metaText}>发布于: {post.createdAt}</span>
                 <span style={metaText}>评论: {post.comments.length}</span>
+                <span style={metaText}>标签: {post.tags.join(', ')}</span>
               </div>
             </div>
             <div style={itemActions}>
-              <button style={editButton}>编辑</button>
+              <button 
+                style={editButton}
+                onClick={() => handleEditPost(post)}
+              >
+                编辑
+              </button>
               <button 
                 style={deleteButton}
-                onClick={() => handleDeletePost(post.id)}
+                onClick={() => handleDeleteBlogPost(post.id)}
               >
                 删除
               </button>
@@ -113,6 +154,18 @@ function Admin() {
           </div>
         ))}
       </div>
+
+      {/* 博客编辑器 */}
+      {showEditor && (
+        <BlogEditor
+          post={editingPost}
+          onSave={handleSavePost}
+          onCancel={() => {
+            setShowEditor(false);
+            setEditingPost(null);
+          }}
+        />
+      )}
     </div>
   );
 
@@ -165,7 +218,7 @@ function Admin() {
   );
 }
 
-// 样式定义保持不变...
+// 样式定义
 const pageStyle = {
   padding: '2rem',
   minHeight: '70vh',
@@ -322,7 +375,8 @@ const itemDescription = {
 
 const itemMeta = {
   display: 'flex',
-  gap: '1rem'
+  gap: '1rem',
+  flexWrap: 'wrap'
 };
 
 const metaText = {
