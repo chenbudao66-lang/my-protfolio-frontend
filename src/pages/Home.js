@@ -37,68 +37,73 @@ function Home() {
 
   return (
     <div style={pageStyle}>
-      {/* 英雄区域 */}
-      <section style={heroSection}>
-        <div style={heroContent}>
-          <h1 style={heroTitle}>Channing Winchester</h1>
-          <p style={heroSubtitle}>数字艺术家 & 视觉设计师</p>
-          <div style={ornamentStyle}>❧</div>
-          <p style={heroDescription}>
+     {/* 英雄区域 */}
+    <section style={heroSection}>
+     <div style={geometricLine}></div>
+     <div style={heroContent}>
+        <h1 style={heroTitle}>Channing Winchester</h1>
+        <p style={heroSubtitle}>数字艺术家 & 视觉设计师</p>
+        <div style={ornamentStyle}>❧</div>
+        <p style={heroDescription}>
             受穆夏启发的数字艺术创作，融合古典美学与现代技术，<br/>
             探索艺术与设计的无限可能。
-          </p>
-          <button 
-            style={ctaButton}
-            onClick={() => navigate('/projects')}
-          >
-            探索作品
-          </button>
-        </div>
-      </section>
+        </p>
+        <button 
+          style={ctaButton}
+          onClick={() => navigate('/projects')}
+        >
+         探索作品
+    </button>
+  </div>
+</section>
 
       {/* 技能简介 */}
       <section style={skillsSection}>
         <div style={skillsGrid}>
-          <div style={skillCard}>
-            <h3 style={skillTitle}>数字艺术</h3>
-            <p style={skillDescription}>
-              受新艺术运动影响的插画与设计，强调自然形态与优雅线条。
-            </p>
-          </div>
-          <div style={skillCard}>
-            <h3 style={skillTitle}>UI/UX 设计</h3>
-            <p style={skillDescription}>
-              结合美学与功能的用户体验设计，创造直观而美丽的数字产品。
-            </p>
-          </div>
-          <div style={skillCard}>
-            <h3 style={skillTitle}>创意开发</h3>
-            <p style={skillDescription}>
-              将艺术思维融入代码，构建独特的交互体验和视觉呈现。
-            </p>
-          </div>
-        </div>
+  <div style={skillCard}>
+    <div style={skillCardDecoration}></div>
+    <h3 style={skillTitle}>数字艺术</h3>
+    <p style={skillDescription}>
+      受新艺术运动影响的插画与设计，强调自然形态与优雅线条。
+    </p>
+  </div>
+  <div style={skillCard}>
+    <div style={skillCardDecoration}></div>
+    <h3 style={skillTitle}>UI/UX 设计</h3>
+    <p style={skillDescription}>
+      结合美学与功能的用户体验设计，创造直观而美丽的数字产品。
+    </p>
+  </div>
+  <div style={skillCard}>
+    <div style={skillCardDecoration}></div>
+    <h3 style={skillTitle}>创意开发</h3>
+    <p style={skillDescription}>
+      将艺术思维融入代码，构建独特的交互体验和视觉呈现。
+    </p>
+  </div>
+</div>
       </section>
 
       {/* 博客预览部分 */}
       <section style={blogSection}>
         <h2 style={sectionTitle}>最新文章</h2>
-        <div style={blogGrid}>
-          {recentPosts.map(post => (
-            <div 
-              key={post.id} 
-              style={blogCard}
-              onClick={() => handlePostClick(post)}
-            >
-              <h3 style={blogTitle}>{post.title}</h3>
-              <p style={blogExcerpt}>{post.excerpt}</p>
-              <div style={blogMeta}>
-                <span style={blogDate}>{post.createdAt}</span>
-                <span style={blogComments}>💬 {post.comments ? post.comments.length : 0}</span>
-              </div>
-            </div>
-          ))}
-        </div>
+       <div style={blogGrid}>
+  {recentPosts.map(post => (
+    <div 
+      key={post.id} 
+      style={blogCard}
+      onClick={() => handlePostClick(post)}
+    >
+      <div style={blogCardDecoration}></div>
+      <h3 style={blogTitle}>{post.title}</h3>
+      <p style={blogExcerpt}>{post.excerpt}</p>
+      <div style={blogMeta}>
+        <span style={blogDate}>{post.createdAt}</span>
+        <span style={blogComments}>💬 {post.comments ? post.comments.length : 0}</span>
+      </div>
+    </div>
+  ))}
+</div>
         {recentPosts.length === 0 && (
           <p style={noPostsText}>暂无博客文章</p>
         )}
@@ -151,7 +156,18 @@ const heroSection = {
   padding: '6rem 2rem 4rem 2rem',
   textAlign: 'center',
   background: `linear-gradient(135deg, ${colors.cream} 0%, ${colors.creamLight} 100%)`,
-  borderBottom: `1px solid ${colors.darkBrown}`
+  borderBottom: `1px solid ${colors.darkBrown}`,
+  position: 'relative',
+  overflow: 'hidden'
+};
+
+const geometricLine = {
+  position: 'absolute',
+  bottom: '0',
+  left: '0',
+  width: '100%',
+  height: '2px',
+  background: `linear-gradient(90deg, transparent, ${colors.teal}, transparent)`
 };
 
 const heroContent = {
@@ -217,9 +233,24 @@ const skillsGrid = {
 const skillCard = {
   backgroundColor: colors.overlayLight,
   padding: '2rem',
+  borderRadius: '12px', // 增加圆角
+  border: `2px solid ${colors.darkBrown}`,
+  textAlign: 'center',
+  position: 'relative',
+  overflow: 'hidden'
+};
+
+// 在 skillCard 后添加几何装饰
+const skillCardDecoration = {
+  position: 'absolute',
+  top: '-10px',
+  right: '-10px',
+  width: '40px',
+  height: '40px',
+  backgroundColor: colors.teal,
   borderRadius: '8px',
-  border: `1px solid ${colors.darkBrown}`,
-  textAlign: 'center'
+  transform: 'rotate(45deg)',
+  opacity: 0.1
 };
 
 const skillTitle = {
@@ -260,19 +291,32 @@ const blogGrid = {
 const blogCard = {
   backgroundColor: colors.overlayLight,
   padding: '2rem',
-  borderRadius: '8px',
-  border: `1px solid ${colors.darkBrown}`,
+  borderRadius: '12px', // 增加圆角
+  border: `2px solid ${colors.darkBrown}`,
   cursor: 'pointer',
   transition: 'all 0.3s ease',
   height: '100%',
   display: 'flex',
   flexDirection: 'column',
-  justifyContent: 'space-between'
+  justifyContent: 'space-between',
+  position: 'relative',
+  overflow: 'hidden'
 };
 
 blogCard[':hover'] = {
   transform: 'translateY(-4px)',
   boxShadow: `0 8px 25px ${colors.darkBrownDark}`
+};
+
+const blogCardDecoration = {
+  position: 'absolute',
+  bottom: '-15px',
+  left: '-15px',
+  width: '60px',
+  height: '60px',
+  border: `2px solid ${colors.teal}`,
+  borderRadius: '12px',
+  opacity: 0.1
 };
 
 const blogTitle = {
